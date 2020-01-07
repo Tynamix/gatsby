@@ -120,9 +120,6 @@ describe(`Options validation`, () => {
     expect(reporter.panic).toBeCalledWith(
       expect.stringContaining(`"accessToken" is required`)
     )
-    expect(reporter.panic).toBeCalledWith(
-      expect.stringContaining(`"accessToken" is required`)
-    )
   })
 
   it(`Fails with empty options`, () => {
@@ -220,6 +217,62 @@ describe(`Options validation`, () => {
     )
     expect(reporter.panic).toBeCalledWith(
       expect.stringContaining(`"wat" is not allowed`)
+    )
+  })
+
+  it(`Passes with proxy settings setted with host and port`, () => {
+    validateOptions(
+      {
+        reporter,
+      },
+      {
+        spaceId: `spaceId`,
+        accessToken: `accessToken`,
+        localeFilter: locale => locale.code === `de`,
+        downloadLocal: false,
+        proxy: {
+          host: `host`,
+          port: 8080,
+        },
+      }
+    )
+
+    expect(reporter.panic).not.toBeCalled()
+  })
+
+  it(`Passes with proxy settings setted to false`, () => {
+    validateOptions(
+      {
+        reporter,
+      },
+      {
+        spaceId: `spaceId`,
+        accessToken: `accessToken`,
+        localeFilter: locale => locale.code === `de`,
+        downloadLocal: false,
+        proxy: false,
+      }
+    )
+
+    expect(reporter.panic).not.toBeCalled()
+  })
+
+  it(`Fails with proxy settings setted to true`, () => {
+    validateOptions(
+      {
+        reporter,
+      },
+      {
+        spaceId: `spaceId`,
+        accessToken: `accessToken`,
+        localeFilter: locale => locale.code === `de`,
+        downloadLocal: false,
+        proxy: true,
+      }
+    )
+
+    expect(reporter.panic).toBeCalledWith(
+      expect.stringContaining(`must be one of [false]`)
     )
   })
 })
